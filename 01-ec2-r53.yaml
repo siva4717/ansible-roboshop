@@ -1,0 +1,26 @@
+- name: configure ec2-instances and update route53 records
+  hosts: local
+  connection: local
+  become: yes
+
+# creating variables 
+  vars:
+    ami_id: ami-09c813fb71547fc4f
+    sg_id: sg-0a2cc58738c1fdf51
+    zone_id: "Z043346914G8XVEOOX7JH"
+    domain_name: "msgd.fun"
+
+# create tasks
+  tasks:
+  - name: create ec2-instances
+    amazon.aws.ec2_instance:
+      name: "{{ item }}"
+      innstance_type: t3.micro
+      security_group: "{{ sg_id }}"
+      image_id: "{{ ami_id }}"
+      state: present
+      tags:
+        Name: "{{ item }}"
+    loop: "{{ instance }}"
+
+
