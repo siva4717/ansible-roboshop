@@ -9,6 +9,8 @@
     sg_id: sg-0a2cc58738c1fdf51
     zone_id: "Z043346914G8XVEOOX7JH"
     domain_name: "msgd.fun"
+    instance:
+    - mongodb
 
 # create tasks
   tasks:
