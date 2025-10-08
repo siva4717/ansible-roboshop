@@ -1,19 +1,19 @@
-- name: create ec2 and r53
+- name: configure ec2-instances and update route53 records
   hosts: local
   connection: local
+
+# creating variables 
   vars:
     ami_id: ami-09c813fb71547fc4f
-    sg_id: sg-0a2cc58738c1fdf51 # replace with your SG ID
-    zone_id: "Z043346914G8XVEOOX7JH" # replace with your ID
+    sg_id: sg-0a2cc58738c1fdf51
+    zone_id: "Z043346914G8XVEOOX7JH"
     domain_name: "msgd.fun"
-    # we can pass instances through command line using -e
-    instances: 
+    instances:
     - mongodb
-    # - redis
-    # - mysql
-    # - rabbitmq
+
+# create tasks
   tasks:
-  - name: create ec2 instance
+  - name: create ec2-instances
     amazon.aws.ec2_instance:
       name: "{{ item }}"
       instance_type: t3.micro
@@ -23,3 +23,29 @@
         Name: "{{ item }}"
     loop: "{{ instances }}"
     register: ec2_output
+
+# - name: create ec2 and r53
+#   hosts: local
+#   connection: local
+#   vars:
+#     ami_id: ami-09c813fb71547fc4f
+#     sg_id: sg-0a2cc58738c1fdf51 # replace with your SG ID
+#     zone_id: "Z043346914G8XVEOOX7JH" # replace with your ID
+#     domain_name: "msgd.fun"
+#     # we can pass instances through command line using -e
+#     instances: 
+#     - mongodb
+#     # - redis
+#     # - mysql
+#     # - rabbitmq
+#   tasks:
+#   - name: create ec2 instance
+#     amazon.aws.ec2_instance:
+#       name: "{{ item }}"
+#       instance_type: t3.micro
+#       security_group: "{{ sg_id }}"
+#       image_id: "{{ ami_id }}"
+#       tags:
+#         Name: "{{ item }}"
+#     loop: "{{ instances }}"
+#     register: ec2_output
