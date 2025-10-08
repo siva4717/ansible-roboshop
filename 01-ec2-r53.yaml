@@ -24,6 +24,6 @@
       tags:
         Name: "{{ item }}"
     loop: "{{ instance }}"
-    register: ec2-output
+    register: ec2_output
 
 
