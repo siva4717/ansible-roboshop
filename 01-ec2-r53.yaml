@@ -9,7 +9,7 @@
     sg_id: sg-0a2cc58738c1fdf51
     zone_id: "Z043346914G8XVEOOX7JH"
     domain_name: "msgd.fun"
-    instance:
+    instances:
     - mongodb
 
 # create tasks
@@ -23,7 +23,7 @@
       state: present
       tags:
         Name: "{{ item }}"
-    loop: "{{ instance }}"
+    loop: "{{ instances }}"
     register: ec2_output
 
 
