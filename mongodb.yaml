@@ -1,0 +1,13 @@
+- name: mongodb configure
+  hosts: mongodb
+  become: yes
+
+  vars:
+    MONGODB_HOST: mongodb.msgd.fun
+  
+  tasks:
+  - name: copy repo file 
+    ansible.builtin.copy:
+      src: ./mongo.repo
+      dest: /etc/yum.repos.d/mongo.repo
+  
