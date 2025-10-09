@@ -10,7 +10,7 @@
     ansible.builtin.copy:
       src: ./mongo.repo
       dest: /etc/yum.repos.d/mongo.repo
-      remote_src : true
+      # remote_src : true
 
   # install monogdb
   - name: install mongodb
