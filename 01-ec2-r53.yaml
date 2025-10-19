@@ -1,43 +1,24 @@
-- name: configure ec2-instances and update route53 records
+- name: create ec2-user and also r53 record
   hosts: local
   connection: local
 
-# creating variables 
+# create variables
   vars:
-    ami_id: ami-09c813fb71547fc4f
-    sg_id: sg-0a2cc58738c1fdf51
-    zone_id: "Z043346914G8XVEOOX7JH"
-    domain_name: "msgd.fun"
-    instances:
-    - mongodb
+   ami_id: "ami-09c813fb71547fc4f"
+   sg: "sg-0791170cc74d2baac"
+   domain_name: "msgd.fun"
+   zone_id: "Z043346914G8XVEOOX7JH"
 
-# create tasks
+  # create task
+
   tasks:
   - name: create ec2-instances
     amazon.aws.ec2_instance:
-      name: "{{ item }}"
-      instance_type: t3.micro
-      security_group: "{{ sg_id }}"
-      image_id: "{{ ami_id }}"
-      tags:
-        Name: "{{ item }}"
-    loop: "{{ instances }}"
-    register: ec2_output
-
-  - name: print the ec2_output
-    ansible.builtin.debug:
-      msg: "{{ ec2_output }}"
-
-  # create r53 records
-  - name: create route53 record 
-    amazon.aws.route53:
-      state: present
-      zone: "{{ domain_name }}"
-      record: "{{ item.item }}.{{ domain_name }}"
-      type: A
-      ttl: 1
-      value: "{{ item.instances[0].private_ip_address }}"
-      overwrite: true
-    loop: "{{ ec2_output.results }}"
-
-
+      name: {{ item }}
+      instance_type: "t3.micro"
+      image_id: {{ ami_id }}
+      region: us-east-1
+      security_group: {{ sg }}
+      tags: 
+        Name: {{ item }}
+    loop: {{ instances }}
