@@ -8,10 +8,15 @@
    sg: "sg-0791170cc74d2baac"
    domain_name: "msgd.fun"
    zone_id: "Z043346914G8XVEOOX7JH"
-
+  #  instances:
+  #  - mongodb
+  #  - catalogue  
+  #  - user
+  #  - cart  
   # create task
 
   tasks:
+  # create ec2-instances
   - name: create ec2-instances
     amazon.aws.ec2_instance:
       name: {{ item }}
@@ -22,3 +27,30 @@
       tags: 
         Name: {{ item }}
     loop: {{ instances }}
+    register: ec2-output_results
+
+# create r53 record 
+  - name: create r53 record
+    amazon.aws.route53:
+      state: present
+      zone: "{{ zone_id }}"
+      record: "{{ item.item }}.{{ domain_name }}"
+      type: A
+      ttl: 1
+      value: "{{ item.instances[0].private_ip_address }}"
+      overwrite: true
+    loop: {{ ec2_output_results }}
+
+
+  - name: create r53 record
+    amazon.aws.route53:
+      state: present
+      zone: "{{ zone_id }}"
+      record: "{{ item.item }}.{{ domain_name }}""
+      type: A
+      ttl: 1
+      value: "{{ item.instances[0].public_ip_address }}"
+      overwrite: true
+    when: item.item  == "frontend"
+    loop: {{ ec2_output_results }}
+   
